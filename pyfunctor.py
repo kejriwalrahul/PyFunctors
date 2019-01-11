@@ -41,6 +41,13 @@ class AbstractSpace:
 	def values(self):
 		return self.data
 
+	def apply(self, func, *args, **kwargs):
+		if DEBUG:
+			self.serial_apply(func, *args, **kwargs)
+		else:
+			self.parallel_apply(func, *args, **kwargs)
+		return self
+
 	def serial_apply(self, func, *args, **kwargs):
 		partial_func = partial(func, *args, **kwargs)
 		self.data = map(partial_func, tqdm(self.data))
@@ -58,15 +65,19 @@ def functorize(func):
 	
 	@wraps(func)
 	def wrapper(self, *args, **kwargs):
-		if DEBUG:
-			self.serial_apply(func, *args, **kwargs)
-		else:
-			self.parallel_apply(func, *args, **kwargs)
-		return self
+		return self.apply(func, *args, **kwargs)
 
 	setattr(AbstractSpace, func.__name__, wrapper)
 	return func
 
+
+"""
+	Builds Functor Compositions
+"""
+def pipeliner(func):
+	def wrapper(self, *args):
+		return func(*args, el=self)
+	setattr(AbstractSpace, func.__name__, wrapper)
 
 """
 	Try-Catch Wrapper to prevent errors from stopping entire processing

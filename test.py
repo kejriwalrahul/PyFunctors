@@ -1,4 +1,4 @@
-from pyfunctor import AbstractSpace, functorize, sanitizor
+from pyfunctor import AbstractSpace, functorize, sanitizor, pipeliner
 
 # import pyfunctor
 # pyfunctor.DEBUG = True
@@ -15,7 +15,11 @@ def adder(x, el):
 def multiplier(y, el):
 	return el * y
 
-if __name__ == "__main__":
+@pipeliner
+def LinearTransformPipeline(x, y, el):
+	return el.multiplier(x).adder(y)
 
+if __name__ == "__main__":
+ 
 	space = AbstractSpace([1,2,3])
-	print space.multiplier(5).adder(3).values()
+	print space.LinearTransformPipeline(5,3).values()
