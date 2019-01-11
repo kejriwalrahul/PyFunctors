@@ -10,7 +10,7 @@
 """
 
 from tqdm import tqdm
-from functools import partial
+from functools import partial, wraps
 from multiprocessing import Pool
 from contextlib import contextmanager
 
@@ -56,6 +56,7 @@ class AbstractSpace:
 """
 def functorize(func):
 	
+	@wraps(func)
 	def wrapper(self, *args, **kwargs):
 		if DEBUG:
 			self.serial_apply(func, *args, **kwargs)
@@ -65,3 +66,18 @@ def functorize(func):
 
 	setattr(AbstractSpace, func.__name__, wrapper)
 	return func
+
+
+"""
+	Try-Catch Wrapper to prevent errors from stopping entire processing
+"""
+def sanitizor(func):
+
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		try:
+			return func(*args, **kwargs)
+		except:
+			return None
+
+	return wrapper

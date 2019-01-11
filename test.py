@@ -1,13 +1,17 @@
-from pyfunctor import AbstractSpace, functorize
+from pyfunctor import AbstractSpace, functorize, sanitizor
 
 # import pyfunctor
 # pyfunctor.DEBUG = True
 
 @functorize
+@sanitizor
 def adder(x, el):
+	if el == 5:
+		raise NotImplementedError
 	return el + x
 
 @functorize
+@sanitizor
 def multiplier(y, el):
 	return el * y
 
