@@ -1,7 +1,6 @@
 """
 	To Do:
 		1. explore stream-in stream-out data
-		2. cacheability of results
 
 	Requirements for parallel execution:
 		1. __name__ == "__main__" is reqd
