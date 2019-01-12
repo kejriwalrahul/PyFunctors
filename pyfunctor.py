@@ -64,7 +64,7 @@ class AbstractSpace:
 		return self.data
 
 	def apply(self, func, *args, **kwargs):
-		if self.parallelize:
+		if not self.parallelize:
 			self.__serial_apply(func, *args, **kwargs)
 		else:
 			self.__parallel_apply(func, *args, **kwargs)
