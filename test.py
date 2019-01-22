@@ -1,4 +1,4 @@
-from pyfunctor import AbstractSpace, functorize, pipeliner, cache_pipeliner
+from pyfunctor import AbstractSpace, functorize, pipeliner, cache_pipeliner, stripe_data
 import math
 
 @functorize
@@ -19,11 +19,12 @@ def sigmoid(el):
 def LinearTransformPipeline(x, y, el):
 	return el.multiplier(x).adder(y)
 
+@stripe_data(batch_size=3)
 @cache_pipeliner
 def SigmoidNeuronTransform(x, y, el):
 	return el.LinearTransformPipeline(x, y).sigmoid()
 
 if __name__ == "__main__":
  
-	space = AbstractSpace([1,2,3], parallelize=True, hashval="testvals")
+	space = AbstractSpace([1, 2, 3, 4, 5], parallelize=True, hashval="testvals")
 	print space.SigmoidNeuronTransform(5,3).values()
