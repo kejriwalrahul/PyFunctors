@@ -9,6 +9,7 @@
 """
 
 import os, errno
+import io
 import pickle
 import ctypes
 from tqdm import tqdm
@@ -66,6 +67,23 @@ class AbstractSpace:
 			self.__parallel_apply(func, *args, **kwargs)
 		self.hash = next_hash(self.hash, func.__name__)
 		return self
+
+	def filter_space(self, filter_function):
+		# Note: effects not counted towards caching
+		self.data = filter(filter_function, tqdm(self.data)) 
+		return self
+
+	def flatten(self):
+		# Note: effects not counted towards caching
+		self.data = [subel for el in self.data if el != None for subel in el]
+		return self
+
+	def write_to_file(self, filename, data_formatter):
+		# Note: effects not counted towards caching
+		with io.open(filename, "w", encoding="utf8") as fout:
+			for el in tqdm(self.data):
+				print el
+				fout.write(u"%s\n" % data_formatter(el).rstrip())
 
 	def __serial_apply(self, func, *args, **kwargs):
 		print "Serially Applying ", func.__name__

@@ -13,7 +13,7 @@ def multiplier(y, el):
 
 @functorize
 def sigmoid(el):
-	return 1.0 / (1 + math.exp(el))
+	return 1.0 / (1 + math.exp(-el))
 
 @pipeliner
 def LinearTransformPipeline(x, y, el):
@@ -27,4 +27,4 @@ def SigmoidNeuronTransform(x, y, el):
 if __name__ == "__main__":
  
 	space = AbstractSpace([1, 2, 3, 4, 5], parallelize=True, hashval="testvals")
-	print space.SigmoidNeuronTransform(5,3).values()
+	space.SigmoidNeuronTransform(5,3).filter_space(lambda x: x!=None).write_to_file("output.txt", lambda x: "Value=%f"%x)
